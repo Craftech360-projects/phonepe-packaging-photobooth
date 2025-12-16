@@ -77,7 +77,7 @@ export const generatePackaging = async (
 - **Depth**: The background should be smoothly blurred (shallow depth of field) to keep all focus heavily on the sharp details of the packaging.
 
 **Technical Specifications**:
-- Aspect Ratio: 9:16
+- Aspect Ratio: 2:3
 - Style: High-fidelity 3D render, Octane Render style.`;
 
   // Remove data:image/jpeg;base64, prefix if present
