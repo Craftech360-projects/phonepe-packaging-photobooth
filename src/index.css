@@ -37,10 +37,11 @@ body {
 
 #root {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1080px; /* Optimized for 1080x1920 display */
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
+  min-height: 100vh;
 }
 
 button {
@@ -82,6 +83,7 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
   background: -webkit-linear-gradient(#eee, #9d4edd);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

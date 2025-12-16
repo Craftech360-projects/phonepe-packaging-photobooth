@@ -4,7 +4,11 @@ const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 const MODEL_NAME = "gemini-2.5-flash-image";
 // const MODEL_NAME = "gemini-3-pro-image-preview";
 
-export const generatePackaging = async (capturedImageBase64, accessories) => {
+export const generatePackaging = async (
+  capturedImageBase64,
+  accessories,
+  userName
+) => {
   if (!API_KEY) {
     throw new Error("Missing Google API Key");
   }
@@ -12,7 +16,7 @@ export const generatePackaging = async (capturedImageBase64, accessories) => {
   // Accessories string
   const accessoriesText =
     accessories.length > 0
-      ? `Inside the blister pack, next to the figure, are the following accessories: ${accessories.join(
+      ? `Inside the collectible box, next to the figure, are the following accessories: ${accessories.join(
           ", "
         )}.`
       : "No accessories included.";
@@ -34,31 +38,47 @@ export const generatePackaging = async (capturedImageBase64, accessories) => {
     console.warn("Failed to load logo for generation:", e);
   }
 
-  const prompt = `Create a premium blister pack packaging design featuring a real person.
-  
-  **Input Reference**:
-  - The FIRST image provided is the **Subject** (Person).
-  - The SECOND image provided is the **Brand Logo**.
-  
-  **Subject**: The person from the first input photo must be depicted as a full-body figure inside the packaging.
-  - **Legs**: Generate natural, human legs wearing appropriate casual clothing (jeans/pants) to complete the half-body input.
-  - **Likeness**: Strictly preserve the user's exact skin tone, facial features, and expression.
-  
-  **Accessories**: ${accessoriesText}
-  - **IMPORTANT**: The accessories should be displayed as SEPARATE ITEMS in their own compartment/section within the packaging, NOT worn or held by the person.
-  - Show them as miniature realistic objects laid out beside or around the figure within the blister packaging.
-  
-  **Packaging Design**:
-  - Style: A high-end, custom collectible packaging.
-  - **Logo Placement**: Take the SECOND input image (the Logo) and composite it EXACTLY as it is onto the top center of the packaging card. It must be clearly visible and legible.
-  - Container: The person is enclosed in a clear, realistic plastic blister bubble attached to the card.
-  - **Composition**: Ensure the entire packaging (card + blister + figure) fits perfectly within the frame. Do not crop the top logo or bottom details.
-  - **NO TEXT**: Do not render any additional text, labels, or typography on the packaging beyond the provided logo. No product names, descriptions, or other text elements.
-  
-  **Technical**:
-  - Aspect Ratio: 9:16.
-  - **Background**: Solid PURE WHITE background.
-  - Quality: Professional studio photography, sharp details, realistic lighting.`;
+  const prompt = `**Type**: 3D Product Render, Macro Photography
+**Subject**: Collectible Action Figure and oversized accessories inside Blister Packaging
+
+**Reference Handling**:
+- PRIMARY REFERENCE (Image 1): Use this image as the strict source for the person's identity, skin tone, AND clothing.
+- SECONDARY REFERENCE (Image 2): Use this image as the exact brand logo displayed prominently on the top header of the cardboard backing.
+
+**1. Layout & Composition (Left/Right Split):**
+- **LEFT ZONE**: The action figure stands prominently on the left side.
+- **RIGHT ZONE**: All accessories are arranged neatly in a vertical column on the right side.
+- The action figure is scaled to occupy the left 60% of the bubble, leaving the right 40% for the accessories.
+
+**2. The Action Figure (Left Side - CRITICAL FIDELITY):**
+- **Skin Tone Accuracy**: PRECISE MATCH. Use the exact skin tone visible in Image 1. Do not darken the skin or apply heavy shadowing that obscures the natural tone. Keep lighting on the face neutral and even to preserve the true skin color.
+- **Outfit/Costume**: REPLICATE IMAGE 1. The figure must be wearing the EXACT clothing worn by the person in Image 1 (same shirt, style, pattern, and colors). Do not invent a superhero costume or generic armor.
+- **Clothing Texture**: Sculpt the clothing to look like high-quality molded plastic (smooth folds, painted details) while maintaining the design from the photo.
+- **Facial Likeness**: High-fidelity 3D caricature. Preserve the exact facial structure, nose shape, and hair style.
+- **Toy Finish**: Apply a semi-matte vinyl finish to the skin (smooth, no realistic pores). Eyes should be slightly enlarged (110%) with a glossy "toy" sheen.
+
+**3. The Accessories (Right Side):**
+- **Scale**: SIGNIFICANTLY OVERSIZED "Hero Props".
+- **Placement**: Arranged vertically on the right side.
+- **Items**: ${accessoriesText}
+- **Texture**: Chunky, molded plastic matching the figure's aesthetic.
+
+**4. The Packaging (Container):**
+- **Structure**: Clear, vacuum-formed plastic blister bubble on a cardboard backing.
+- **Cardboard Header (Top Section):** This area must prominently feature the Logo (Image 2). Directly below or beside the logo, clearly render the name: **"${userName}"**.
+- **Username Styling**: The name "${userName}" must be rendered in BOLD, stylized, uppercase letters that look like a printed action figure title (e.g., white text with a thick colored outline matching the packaging theme). It must be easily readable.
+- **Cardboard Colors & Graphics**: Use #583594, #A973FF, #EEEEF0, #FDC83A for abstract geometric background shapes.
+- **Text Constraint**: Aside from the required Logo and the exact name "${userName}", NO other text, slogans, or fake product details should be generated on the packaging.
+
+**5. Lighting & Environment (NEW PREMIUM STUDIO):**
+- **Lighting**: Sophisticated studio lighting setup. Use softboxes to create bright, even illumination on the figure's face (preserving skin tone). Add distinct, sharp rim lighting to the edges of the plastic blister pack to make it sparkle and define its shape against the background.
+- **Background Environment**: Professional studio "infinity cove" backdrop.
+- **Background Color/Texture**: A smooth, soft atmospheric gradient transitioning subtly from a light purple (#A973FF) at the top to a neutral light grey (#EEEEF0) near the bottom surface.
+- **Depth**: The background should be smoothly blurred (shallow depth of field) to keep all focus heavily on the sharp details of the packaging.
+
+**Technical Specifications**:
+- Aspect Ratio: 9:16
+- Style: High-fidelity 3D render, Octane Render style.`;
 
   // Remove data:image/jpeg;base64, prefix if present
   const userImageBase64 = capturedImageBase64.replace(
@@ -100,10 +120,11 @@ export const generatePackaging = async (capturedImageBase64, accessories) => {
       model: MODEL_NAME,
       contents: parts,
       config: {
+        temperature: 1,
         responseModalities: ["IMAGE"],
         imageConfig: {
           aspectRatio: "9:16",
-          imageSize: "1K",
+          // imageSize: "1K",
         },
       },
     });

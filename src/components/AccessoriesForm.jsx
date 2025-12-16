@@ -57,7 +57,7 @@ const AccessoriesForm = ({ onAccessoriesChange }) => {
 
     // Check active count
     const activeCount = newInputs.filter((v) => v.trim().length > 0).length;
-    if (activeCount > 3) {
+    if (activeCount > 5) {
       // If this exact input is making it go over 3, warn
       // This is a bit tricky UX. User asked: "User can enter a maximum of 3 accessories" but "In UI we can add 5 inputs".
       // Maybe we should disable empty slots if 3 are filled?
@@ -71,14 +71,14 @@ const AccessoriesForm = ({ onAccessoriesChange }) => {
   return (
     <div style={{ width: "100%", maxWidth: "480px", margin: "0 auto" }}>
       <h3 style={{ textAlign: "left", marginBottom: "1rem", color: "#d1d1d1" }}>
-        Add Accessories (Max 3)
+        Add Accessories (Max 5)
       </h3>
       <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
         {inputs.map((val, idx) => {
           const isError = !!errors[idx];
           const isFilled = val.trim().length > 0;
           // Disable if 3 slots are already filled AND this one is empty
-          const isDisabled = filledCount >= 3 && !isFilled;
+          const isDisabled = filledCount >= 5 && !isFilled;
 
           return (
             <div key={idx} style={{ position: "relative" }}>
@@ -119,11 +119,11 @@ const AccessoriesForm = ({ onAccessoriesChange }) => {
           );
         })}
       </div>
-      {filledCount >= 3 && (
+      {filledCount >= 5 && (
         <p
           style={{ color: "#9d4edd", fontSize: "0.9rem", marginTop: "0.5rem" }}
         >
-          Maximum 3 accessories reached.
+          Maximum 5 accessories reached.
         </p>
       )}
     </div>
